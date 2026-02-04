@@ -45,11 +45,36 @@ const gameController = (function(){
         };
         availableCheck();
     };
-    for (i = 0; i < 3; i++){
-        getMark();
-        changePlayer();
-        gameBoard.getBoard();
-        console.log(" ");
+    const checkWin = () =>{
+        if (gameBoard.board[2] && gameBoard.board[5] && gameBoard.board[8] === "X"){
+            console.log('X win');
+        } else {
+            return;
+        };
     };
-    return{changePlayer, getMark}
+    const playRound = () =>{
+        let winPoint = 0;
+        const checkWin = () =>{
+            if (gameBoard.board[2] && gameBoard.board[5] && gameBoard.board[8] === "X"){
+                winPoint += 1;
+                console.log('X win');
+            } else {
+                return;
+            };
+        };
+        for (i = 0; i < 10; i++){
+            if (winPoint === 1){
+                console.log(`game ended`)
+                break;
+            } else {
+                getMark();
+                changePlayer();
+                gameBoard.getBoard();
+                checkWin();
+                console.log(" ");
+            };
+        };
+    };
+    return{changePlayer, getMark, playRound}
 })();
+gameController.playRound();
