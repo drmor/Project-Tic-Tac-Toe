@@ -11,9 +11,10 @@ const gameBoard = (function (){
     const setMark = (index, mark) =>{
         if (index >= 0 && index <= 8){
             board[index] = mark;
-        }
+        };
     };
     return {
+        board,
         getBoard,
         setMark,
     };
@@ -33,7 +34,14 @@ const gameController = (function(){
         activePlayer = activePlayer === 0 ? 1 : 0;
     };
     const getMark = () =>{
-        gameBoard.setMark(`${prompt(`index for ${players[activePlayer].name}`)}`, players[activePlayer].mark);
+        let position = parseInt(prompt(`index for ${players[activePlayer].name}`));
+        if (gameBoard.board[position] === " "){
+            gameBoard.setMark(position, players[activePlayer].mark);
+        } else {
+            alert("place taken")
+            getMark();
+        }
+        return position;
     };
     for (i = 0; i < 3; i++){
         getMark();
