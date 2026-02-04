@@ -35,13 +35,15 @@ const gameController = (function(){
     };
     const getMark = () =>{
         let position = parseInt(prompt(`index for ${players[activePlayer].name}`));
-        if (gameBoard.board[position] === " "){
+        const availableCheck = () =>{
+            if (gameBoard.board[position] === " "){
             gameBoard.setMark(position, players[activePlayer].mark);
-        } else {
-            alert("place taken")
-            getMark();
-        }
-        return position;
+            } else {
+                alert("place taken")
+                getMark();
+            }
+        };
+        availableCheck();
     };
     for (i = 0; i < 3; i++){
         getMark();
