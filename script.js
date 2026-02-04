@@ -45,24 +45,39 @@ const gameController = (function(){
         };
         availableCheck();
     };
-    const checkWin = () =>{
-        if (gameBoard.board[2] && gameBoard.board[5] && gameBoard.board[8] === "X"){
-            console.log('X win');
-        } else {
-            return;
-        };
-    };
     const playRound = () =>{
         let winPoint = 0;
+        let drawPoint = 0;
+        let winner;
+        const winPatterns = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [2, 4, 6],
+            [0, 4, 8]
+        ];
         const checkWin = () =>{
-            if (gameBoard.board[2] && gameBoard.board[5] && gameBoard.board[8] === "X"){
-                winPoint += 1;
-                console.log('X win');
-            } else {
-                return;
+            for(let n = 0; n < winPatterns.length; n++){
+                let pattern = winPatterns[n];
+                let a = pattern[0];
+                let b = pattern[1];
+                let c = pattern[2];
+                if (gameBoard.board[a] === gameBoard.board[b] && 
+                    gameBoard.board[b] === gameBoard.board[c] && 
+                    gameBoard.board[a] !== " "){
+                    winPoint += 1;
+                    console.log('X win');
+                } else if (!gameBoard.board.includes(" ")){
+                    if (n < 1){
+                        console.log('draw');
+                    };
+                };
             };
         };
-        for (i = 0; i < 10; i++){
+        for (let i = 0; i < 9; i++){
             if (winPoint === 1){
                 console.log(`game ended`)
                 break;
