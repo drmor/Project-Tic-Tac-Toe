@@ -1,13 +1,5 @@
 const gameBoard = (function (){
     let board = [" ", " ", " ", " ", " ", " ", " ", " ", " "];
-    const getBoard = () =>{
-    for (let i = 0; i < 9; i += 3){
-        console.log(" " + board[i] + " | " + board[i + 1] + " | " + board[i + 2])
-            if (i < 6) {
-                console.log("---+---+---");
-            };
-        };
-    };
     const setMark = (index, mark) =>{
         if (index >= 0 && index <= 8){
             board[index] = mark;
@@ -15,7 +7,6 @@ const gameBoard = (function (){
     };
     return {
         board,
-        getBoard,
         setMark,
     };
 })();
@@ -54,18 +45,7 @@ const gameController = (function(){
     const changePlayer = () =>{
         activePlayer = activePlayer === 0 ? 1 : 0;
     };
-    const getMark = () =>{
-        let position = parseInt(prompt(`index for ${players[activePlayer].name}`));
-        const availableCheck = () =>{
-            if (gameBoard.board[position] === " "){
-            gameBoard.setMark(position, players[activePlayer].mark);
-            } else {
-                alert("place taken");
-                getMark();
-            };
-        };
-        availableCheck();
-    };
+
     const playRound = () =>{
         let winPoint = 0;
         let drawPoint = 0;
@@ -80,6 +60,7 @@ const gameController = (function(){
             [2, 4, 6],
             [0, 4, 8]
         ];
+
         const checkWin = () =>{
             for(let n = 0; n < winPatterns.length; n++){
                 let pattern = winPatterns[n];
@@ -90,7 +71,7 @@ const gameController = (function(){
                     gameBoard.board[b] === gameBoard.board[c] && 
                     gameBoard.board[a] !== " "){
                     winPoint += 1;
-                    console.log('X win');
+                    console.log(`${players[activePlayer].name} win`);
                 } else if (!gameBoard.board.includes(" ")){
                     if (n < 1){
                         console.log('draw');
@@ -98,21 +79,31 @@ const gameController = (function(){
                 };
             };
         };
+        
+        const gridItems = document.querySelectorAll('.gridItem');
+        gridItems.forEach(item =>{
+                if (gameBoard.board[item.dataset.index] === " "){
+                    item.addEventListener('click', () => {
+                    gameBoard.setMark(item.dataset.index, players[activePlayer].mark);
+                    console.log(activePlayer);
+                    checkWin();
+                    changePlayer();
+                    screenController.updateScreen();
+                });
+            };
+        });
+
         for (let i = 0; i < 1; i++){
             if (winPoint === 1){
                 console.log(`game ended`);
                 break;
-            } else {
-                getMark();
-                changePlayer();
-                gameBoard.getBoard();
-                checkWin();
-                console.log(" ");
-            };
+            }
         };
+        return {checkWin};
     };
-    return{players, changePlayer, getMark, playRound, getPlayersValue};
+    return{players, activePlayer, changePlayer, playRound, getPlayersValue};
 })();
+
 const screenController  = (function(){
     const updateScreen = () =>{
         if (gameController.players.length === 2){
@@ -128,18 +119,8 @@ const screenController  = (function(){
             gridElement.textContent = gameBoard.board[i];
             container.appendChild(gridElement);
         };
-        const gridItems = document.querySelectorAll('.gridItem');
-        gridItems.forEach(item =>{
-            item.addEventListener('click', () => {
-                gameBoard.setMark(item.dataset.index, "+")
-                updateScreen();
-            });
-        });
-    };
-    /* for (let b = 0; b < 3; b++){
         gameController.playRound();
-    } */
-    
+    };
     return{updateScreen};
 })();
 gameController.getPlayersValue();
