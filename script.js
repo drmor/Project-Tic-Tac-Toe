@@ -27,11 +27,28 @@ function createPlayer(name, mark){
 const gameController = (function(){
     let players = [];
     let activePlayer = 0;
-    players.push(p1 = createPlayer("p1", "X"));
-    players.push(p2 = createPlayer("p2", "O"));
 
     const getPlayersValue = () =>{
-        
+        const form = document.querySelector(".hero");
+        const closeWindow = () =>{
+            if (players.length === 2){
+                form.style.display = "none";
+            };
+        };
+        const playerOneValue = () =>{
+            const inputP1 = document.getElementById("p1");
+            const playerOneName = inputP1.value;
+            players.push(p1 = createPlayer(playerOneName, "X"));
+            closeWindow();
+        };
+        const playerTwoValue = () =>{
+            const inputP2 = document.getElementById("p2");
+            const playerTwoName = inputP2.value;
+            players.push(p1 = createPlayer(playerTwoName, "O"));
+            closeWindow();
+        };
+        document.getElementById("BtnP1").addEventListener("click", playerOneValue);
+        document.getElementById("BtnP2").addEventListener("click", playerTwoValue);
     };
 
     const changePlayer = () =>{
@@ -94,10 +111,13 @@ const gameController = (function(){
             };
         };
     };
-    return{players, changePlayer, getMark, playRound};
+    return{players, changePlayer, getMark, playRound, getPlayersValue};
 })();
 const screenController  = (function(){
     const updateScreen = () =>{
+        if (gameController.players.length === 2){
+            document.body.innerHTML = "";
+        }
         const container = document.createElement("div");
         document.body.appendChild(container);
         container.classList.add('container');
@@ -122,4 +142,5 @@ const screenController  = (function(){
     
     return{updateScreen};
 })();
+gameController.getPlayersValue();
 screenController.updateScreen();
