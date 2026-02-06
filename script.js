@@ -47,8 +47,8 @@ const gameController = (function(){
             players.push(p1 = createPlayer(playerTwoName, "O"));
             closeWindow();
         };
-        document.getElementById("BtnP1").addEventListener("click", playerOneValue);
-        document.getElementById("BtnP2").addEventListener("click", playerTwoValue);
+        document.getElementById("BtnP1").addEventListener("click", playerOneValue, { once: true });
+        document.getElementById("BtnP2").addEventListener("click", playerTwoValue, { once: true });
     };
 
     const changePlayer = () =>{
