@@ -24,26 +24,15 @@ function createPlayer(name, mark){
     return {name, mark};
 };
 
-const screenController  = (function(){
-    const updateScreen = () =>{
-        const container = document.createElement("div");
-        document.body.appendChild(container);
-        container.classList.add('container');
-        for (i = 0; i <= gameBoard.board.length; i++){
-            const gridItem = document.createElement("div");
-            gridItem.classList.add('gridItem');
-            gridItem.textContent = gameBoard.board[i];
-            container.appendChild(gridItem);
-        };
-    };
-    return{updateScreen};
-})();
-
 const gameController = (function(){
     let players = [];
     let activePlayer = 0;
     players.push(p1 = createPlayer("p1", "X"));
     players.push(p2 = createPlayer("p2", "O"));
+
+    const getPlayersValue = () =>{
+        
+    };
 
     const changePlayer = () =>{
         activePlayer = activePlayer === 0 ? 1 : 0;
@@ -105,7 +94,32 @@ const gameController = (function(){
             };
         };
     };
-    return{changePlayer, getMark, playRound};
+    return{players, changePlayer, getMark, playRound};
 })();
-gameController.playRound();
+const screenController  = (function(){
+    const updateScreen = () =>{
+        const container = document.createElement("div");
+        document.body.appendChild(container);
+        container.classList.add('container');
+        for (let i = 0; i < gameBoard.board.length; i++){
+            const gridElement = document.createElement("div");
+            gridElement.classList.add('gridItem');
+            gridElement.setAttribute("data-index", i)
+            gridElement.textContent = gameBoard.board[i];
+            container.appendChild(gridElement);
+        };
+        const gridItems = document.querySelectorAll('.gridItem');
+        gridItems.forEach(item =>{
+            item.addEventListener('click', () => {
+                gameBoard.setMark(item.dataset.index, "+")
+                updateScreen();
+            });
+        });
+    };
+    /* for (let b = 0; b < 3; b++){
+        gameController.playRound();
+    } */
+    
+    return{updateScreen};
+})();
 screenController.updateScreen();
