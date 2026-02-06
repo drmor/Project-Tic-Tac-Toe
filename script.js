@@ -24,6 +24,21 @@ function createPlayer(name, mark){
     return {name, mark};
 };
 
+const screenController  = (function(){
+    const updateScreen = () =>{
+        const container = document.createElement("div");
+        document.body.appendChild(container);
+        container.classList.add('container');
+        for (i = 0; i <= gameBoard.board.length; i++){
+            const gridItem = document.createElement("div");
+            gridItem.classList.add('gridItem');
+            gridItem.textContent = gameBoard.board[i];
+            container.appendChild(gridItem);
+        };
+    };
+    return{updateScreen};
+})();
+
 const gameController = (function(){
     let players = [];
     let activePlayer = 0;
@@ -39,9 +54,9 @@ const gameController = (function(){
             if (gameBoard.board[position] === " "){
             gameBoard.setMark(position, players[activePlayer].mark);
             } else {
-                alert("place taken")
+                alert("place taken");
                 getMark();
-            }
+            };
         };
         availableCheck();
     };
@@ -77,9 +92,9 @@ const gameController = (function(){
                 };
             };
         };
-        for (let i = 0; i < 9; i++){
+        for (let i = 0; i < 1; i++){
             if (winPoint === 1){
-                console.log(`game ended`)
+                console.log(`game ended`);
                 break;
             } else {
                 getMark();
@@ -90,6 +105,7 @@ const gameController = (function(){
             };
         };
     };
-    return{changePlayer, getMark, playRound}
+    return{changePlayer, getMark, playRound};
 })();
 gameController.playRound();
+screenController.updateScreen();
