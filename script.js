@@ -49,6 +49,15 @@ const gameController = (function(){
     };
     const getWin = () => {return winnerFound};
     const getDraw = () => {return draw};
+    const reset = () =>{
+        if (winnerFound === true){
+            winnerFound = false;
+            return;
+        } else if (draw === true){
+            draw = false
+            return
+        }
+    }
     const playRound = () =>{
         const winPatterns = [
             [0, 1, 2],
@@ -95,13 +104,20 @@ const gameController = (function(){
         });
         return {checkWin};
     };
-    return{players, activePlayer, changePlayer, playRound, getPlayersValue, getWin, getDraw};
+    return{players, activePlayer, changePlayer, playRound, getPlayersValue, getWin, getDraw, reset};
 })();
 
 const screenController  = (function(){
     const nextRoundBtn = document.getElementById("next")
     nextRoundBtn.addEventListener("click", () =>{
-        console.log(gameController.getWin());
+        gridContainer.innerHTML = "";
+        let emptyArr = " ";
+        for (let i = 0; i < gameBoard.board.length; i++){
+            gameBoard.board[i] = emptyArr
+        };
+        gridContainer.style.pointerEvents = "auto";
+        gameController.reset();
+        updateScreen();
     });
     const gridContainer = document.querySelector(".gridContainer");
     const displayContent = (change) =>{
@@ -115,7 +131,11 @@ const screenController  = (function(){
             let draw = gameController.getDraw();
             if (win === true){
                 turn.textContent = "";
-                turn.textContent = `Player: ${gameController.players[change].name} won!`;//срабатывает замена игрока и побеждает другой игрок
+                if (change === 0){
+                    turn.textContent = `Player: ${gameController.players[1].name} won!`;
+                } else if(change === 1){
+                    turn.textContent = `Player: ${gameController.players[0].name} won!`;
+                }
             } else if (draw === true){
                 turn.textContent = "";
                 turn.textContent = "Draw!";
