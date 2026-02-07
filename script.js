@@ -18,6 +18,8 @@ function createPlayer(name, mark){
 const gameController = (function(){
     let players = [];
     let activePlayer = 0;
+    let winnerFound = false;
+    let draw = false;
 
     const getPlayersValue = () =>{
         const form = document.querySelector(".hero");
@@ -45,11 +47,8 @@ const gameController = (function(){
     const changePlayer = () =>{
         activePlayer = activePlayer === 0 ? 1 : 0;
     };
-
+    const getWin = () => {return winnerFound}
     const playRound = () =>{
-        let winPoint = 0;
-        let drawPoint = 0;
-        let winner;
         const winPatterns = [
             [0, 1, 2],
             [3, 4, 5],
@@ -60,7 +59,6 @@ const gameController = (function(){
             [2, 4, 6],
             [0, 4, 8]
         ];
-
         const checkWin = () =>{
             for(let n = 0; n < winPatterns.length; n++){
                 let pattern = winPatterns[n];
@@ -70,47 +68,62 @@ const gameController = (function(){
                 if (gameBoard.board[a] === gameBoard.board[b] && 
                     gameBoard.board[b] === gameBoard.board[c] && 
                     gameBoard.board[a] !== " "){
-                    winPoint += 1;
-                    console.log(`${players[activePlayer].name} win`);
-                } else if (!gameBoard.board.includes(" ")){
-                    if (n < 1){
-                        console.log('draw');
-                    };
+                    winnerFound = true;
+                    
+                } else if (!gameBoard.board.includes(" ") && winnerFound === false){
+                    draw = true;
+                    return draw;
                 };
             };
+            if (winnerFound === true || draw === true){
+                screenController.gridContainer.style.pointerEvents = "none";
+            }
         };
-        
+
         const gridItems = document.querySelectorAll('.gridItem');
         gridItems.forEach(item =>{
-                if (gameBoard.board[item.dataset.index] === " "){
+            if (gameBoard.board[item.dataset.index] === " "){
                     item.addEventListener('click', () => {
                     gameBoard.setMark(item.dataset.index, players[activePlayer].mark);
-                    console.log(activePlayer);
                     checkWin();
                     changePlayer();
+                    screenController.displayContent(activePlayer);
                     screenController.updateScreen();
                 });
             };
         });
-
-        for (let i = 0; i < 1; i++){
-            if (winPoint === 1){
-                console.log(`game ended`);
-                break;
-            }
-        };
         return {checkWin};
     };
-    return{players, activePlayer, changePlayer, playRound, getPlayersValue};
+    return{players, activePlayer, changePlayer, playRound, getPlayersValue, getWin, draw};
 })();
 
 const screenController  = (function(){
+    const nextRoundBtn = document.getElementById("next")
+    const asd = () =>{
+        gameController.getWin();
+    }
+    nextRoundBtn.addEventListener("click", () =>{
+        console.log(asd());
+    });
+    const gridContainer = document.querySelector(".gridContainer");
+    const displayContent = (change) =>{
+        const turn = document.querySelector(".turn");
+        if (gameController.players.length === 2){
+            turn.textContent = "";
+            turn.textContent = "Player: " + gameController.players[change].name + " turn";
+        } else if (gameController.getWin() === true){
+            console.log(gameController.getWin());
+        } else if (gameController.draw === true){
+            turn.textContent = "";
+            turn.textContent = "Draw!";
+        }
+    };
     const updateScreen = () =>{
         if (gameController.players.length === 2){
-            document.body.innerHTML = "";
+            gridContainer.innerHTML = "";
         }
         const container = document.createElement("div");
-        document.body.appendChild(container);
+        gridContainer.appendChild(container);
         container.classList.add('container');
         for (let i = 0; i < gameBoard.board.length; i++){
             const gridElement = document.createElement("div");
@@ -121,7 +134,8 @@ const screenController  = (function(){
         };
         gameController.playRound();
     };
-    return{updateScreen};
+    
+    return{gridContainer, updateScreen, displayContent};
 })();
 gameController.getPlayersValue();
 screenController.updateScreen();
