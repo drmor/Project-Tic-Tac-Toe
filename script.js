@@ -47,7 +47,8 @@ const gameController = (function(){
     const changePlayer = () =>{
         activePlayer = activePlayer === 0 ? 1 : 0;
     };
-    const getWin = () => {return winnerFound}
+    const getWin = () => {return winnerFound};
+    const getDraw = () => {return draw};
     const playRound = () =>{
         const winPatterns = [
             [0, 1, 2],
@@ -94,16 +95,13 @@ const gameController = (function(){
         });
         return {checkWin};
     };
-    return{players, activePlayer, changePlayer, playRound, getPlayersValue, getWin, draw};
+    return{players, activePlayer, changePlayer, playRound, getPlayersValue, getWin, getDraw};
 })();
 
 const screenController  = (function(){
     const nextRoundBtn = document.getElementById("next")
-    const asd = () =>{
-        gameController.getWin();
-    }
     nextRoundBtn.addEventListener("click", () =>{
-        console.log(asd());
+        console.log(gameController.getWin());
     });
     const gridContainer = document.querySelector(".gridContainer");
     const displayContent = (change) =>{
@@ -111,12 +109,19 @@ const screenController  = (function(){
         if (gameController.players.length === 2){
             turn.textContent = "";
             turn.textContent = "Player: " + gameController.players[change].name + " turn";
-        } else if (gameController.getWin() === true){
-            console.log(gameController.getWin());
-        } else if (gameController.draw === true){
-            turn.textContent = "";
-            turn.textContent = "Draw!";
         }
+        const displayWin = () =>{
+            let win = gameController.getWin();
+            let draw = gameController.getDraw();
+            if (win === true){
+                turn.textContent = "";
+                turn.textContent = `Player: ${gameController.players[change].name} won!`;//срабатывает замена игрока и побеждает другой игрок
+            } else if (draw === true){
+                turn.textContent = "";
+                turn.textContent = "Draw!";
+            }
+        };
+        displayWin();
     };
     const updateScreen = () =>{
         if (gameController.players.length === 2){
